@@ -47,11 +47,11 @@
 
         </block>
         <div class="footer">
-            <div class="pull-right">
-                10GB of <strong>250GB</strong> Free.
-            </div>
+            <!--<div class="pull-right">-->
+                <!--10GB of <strong>250GB</strong> Free.-->
+            <!--</div>-->
             <div>
-                <strong>Copyright</strong> Example Company &copy; 2014-2015
+                <strong>Copyright</strong> Raven &copy; 2017-2020
             </div>
         </div>
 
@@ -67,8 +67,8 @@
 <script>
     $(function () {
         var status = $('#auth_status').val();
-        if (status == 9){
-            message.message({status:status,url:document.referrer});
+        if (status == 401){
+            message.message({code:status,url:document.referrer});
         }
     })
 </script>

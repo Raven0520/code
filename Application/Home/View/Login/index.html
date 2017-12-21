@@ -50,6 +50,7 @@
 <script src="/Public/js/bootstrap.min.js"></script>
 <script src="/Public/js/sweetalert/dist/sweetalert.min.js"></script>
 <script src="/Public/js/common.js"></script>
+<script src="/Public/js/config.js"></script>
 <script>
 
     document.onkeydown = function (e) {
@@ -72,7 +73,7 @@
         if (!password){
             return message.message({info:'Password Can Not Be Empty !',status:2});
         }
-        var url = "{:U('login')}";
+        var url = config.base_url + '/Login/login';
         submit.submit(url,'');
     }
 </script>

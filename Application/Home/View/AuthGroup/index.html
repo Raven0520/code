@@ -1,0 +1,185 @@
+<extend name="Common/index"/>
+
+<block name="action-area">
+    <div class="col-sm-8">
+        <div class="title-action col-sm-10">
+            <a class="btn btn-primary col-sm-2 col-sm-offset-12" onclick="Save()">Save</a>
+        </div>
+    </div>
+</block>
+
+<block name="content">
+    <div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Auth Group</h5>
+                    <div class="ibox-tools">
+                        <foreach name="AuthGroup" item="v">
+                            <button type="button" id="group{$v.id}" class="btn btn-xs btn-default pull-left m-l-xs group-btn" style="margin-top: -3px" onclick="chooseGroup('{$v.id}','{$v.title}','{$v.rules}')">{$v.title}</button>
+                        </foreach>
+
+                        <a class="add-link" data-toggle="modal" data-target="#add">
+                            <i class="fa fa-plus"></i>
+                        </a>
+
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content" style="line-height: 3.2" id="auth_rules">
+
+                    <foreach name="menu" item="v">
+                        <button onclick="choose('{$v.id}',1)" id="{$v.id}" type="button" class="btn btn-default m-r" style="width: 160px"><i class="{$v.icon} m-r-sm"></i>{$v.title}</button>
+                        <volist name="$v[second]" id="vo">
+                            <button onclick="choose('{$vo.id}',2)" type="button" id="{$vo.id}" class="btn btn-default m-r" style="width: 160px"><i class="{$vo.icon} m-r-sm"></i>{$vo.title}</button>
+                            <volist name="$vo[other]" id="val">
+                                <button onclick="choose('{$val.id}',3)" id="{$val.id}" class="btn btn-circle btn-default btn-xs m-r-sm" type="button"><i class="{$val.icon}"></i></button>
+                            </volist>
+                        </volist>
+                        <br/>
+                    </foreach>
+
+                    <input type="hidden" class="form-control" id="rules">
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+    <div class="modal inmodal" id="add" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content animated bounceInRight">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">Add Group</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <input type="hidden" id="id" name="id">
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Title</label>
+                            <div class="col-sm-8">
+                                <input class="form-control m-b" name="title" id="title_" autofocus/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+
+<block name="script">
+    <script>
+        var rules = [];
+        var rule_text;
+
+        function choose(id,type) {
+
+            changeClass(id,'btn-default','btn-info');
+
+            $.ajax({
+                type : "POST",
+                data : {id:id},
+                url  : "/AuthRule/getRules",
+                success : function (res) {
+                    if (res.sec){
+                        $.each(res.sec,function (i,v) {
+                            1 == type && changeClass(v,'btn-default','btn-info');
+                            2 == type && changeClass(v,'btn-default','btn-info');
+                        });
+                    }
+                    if (type == 1){
+                        if (res.oth){
+                            $.each(res.oth,function (i,v) {
+                                changeClass(v,'btn-default','btn-info');
+                            })
+                        }
+                    }
+                    updateRule();
+                }
+            })
+        }
+
+        /**
+         * 更改样式的方法
+         */
+        function changeClass(id,origin,replace) {
+            var bool;
+            var target = $('#'+id);
+            var cls = target.attr('class');
+            bool = cls.indexOf(origin) + 1;
+
+            0 != bool && target.removeClass(origin).addClass(replace);
+            0 != bool && rules.push(id);
+            0 == bool && target.removeClass(replace).addClass(origin);
+            0 == bool && removeRules(rules,id);
+        }
+
+        /**
+         * 去除元素的方法
+         */
+        function removeRules(arr,val) {
+            for (var i = 0; i < arr.length; i++){
+                arr[i] == val && arr.splice(i,1);
+            }
+        }
+
+        /**
+         * 设置规则组名
+         */
+
+
+        /**
+         * 设置规则字符串
+         */
+        function updateRule() {
+            rule_text = rules.join(',');
+            $('#rules').val(rule_text);
+        }
+        function chooseGroup(id,name,rule) {
+            $('.group-btn').removeClass('btn-primary').addClass('btn-default');
+            $('#auth_rules button').removeClass('btn-info').addClass('btn-default');
+            var target = $('#group'+id);
+            var cls  = target.attr('class');
+            var bool = cls.indexOf('btn-default') + 1;
+
+            if (bool != 0){
+                target.removeClass('btn-default').addClass('btn-primary');
+                fill.fill_by_id({title_:'name',id:''},{id:id,name:name},1);
+            }else {
+                target.removeClass('btn-primary').addClass('btn-default');
+                clean.clean_by_id(['title_','id'],1);
+            }
+            $('#rules').val(rule);
+            rules = rule.split(',');
+            $.each(rules,function (i,v) {
+                $('#'+v).removeClass('btn-default').addClass('btn-info').removeClass('btn-outline');
+            })
+        }
+        /**
+         * 保存权限组
+         */
+        function Save() {
+            var title = $('#title_').val();
+            var id = $('#id').val();
+            if (!title){
+                return swal('Title can not be Empty !','','error');
+            }
+            var data = {id:id,title:title,rules:$('#rules').val()};
+            var url  = "{:U(Add)}";
+            submit.submit(url,data);
+        }
+    </script>
+</block>

@@ -15,17 +15,15 @@ class LoginController extends CommonController
     {
         $user = M('user')->where(['username|nickname' => $_POST['username']])->find();
         if (!$user) {
-            $info = ['info' => '用户不存在', 'status' => 2];
+            $this->errorResponse('用户不存在');
         } elseif ($user['status'] != 1) {
-            $info = ['info' => '用户被禁用', 'status' => 2];
+            $this->errorResponse('用户被禁用');
         } elseif (getMD5($_POST['password']) != $user['password']) {
-            $info = ['info' => '密码错误', 'status' => 2];
+            $this->errorResponse('密码错误');
         } else {
-            $this->updateUser($user['id']);
-            $info = ['info' => '欢迎回来', 'status' => 1, 'url' => '/'];
+            $this->updateUser($user);
+            $this->successResponse(['url' => '/'], '欢迎回来');
         }
-        session('User', $user);
-        $this->ajaxReturn($info);
     }
 
     public function register()
@@ -60,32 +58,16 @@ class LoginController extends CommonController
     }
 
     /**
-     * 获取用户登录IP
-     */
-    public function getIp()
-    {
-        if (getenv("HTTP_CLIENT_IP")) {
-            $ip = getenv("HTTP_CLIENT_IP");
-        } elseif (getenv("HTTP_X_FORWARDED_FOR")) {
-            $ip = getenv("HTTP_X_FORWARDED_FOR");
-        } elseif (getenv("REMOTE_ADDR")) {
-            $ip = getenv("REMOTE_ADDR");
-        } else {
-            $ip = 'UnKnow';
-        }
-        return $ip;
-    }
-
-    /**
-     * @param $id
+     * @param $user
      */
 
-    public function updateUser($id)
+    public function updateUser($user)
     {
         //获取用户IP地址
-        $data['login_ip']   = $this->getIp();
+        $data['login_ip']   = getIp();
         $data['login_time'] = time();
-        D('User')->where(['id' => $id])->save($data);
+        S('User_' . $data['login_ip'], $user, 7200);
+        D('User')->where(['id' => $user['id']])->save($data);
     }
 
     /**

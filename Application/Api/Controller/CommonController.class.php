@@ -155,10 +155,16 @@ class CommonController extends Controller
     }
 
     /**
-     * 验证登录
+     * 列表数据，不带分页
+     * @param mixed|string $model
+     * @param array $where
+     * @param string $order
+     * @param bool $field
+     * @return mixed
      */
-    protected function checkLogin()
+    protected function select($model = CONTROLLER_NAME, $where = array(), $field = true, $order = '')
     {
-
+        return $this->lists($model, $where, $field, $order, false);
     }
+
 }

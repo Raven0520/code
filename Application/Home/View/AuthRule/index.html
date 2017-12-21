@@ -103,9 +103,7 @@
                             <div class="col-sm-9">
                                 <select class="form-control m-b" name="sort_id" id="sort_id">
                                     <option value="0">Top Menu</option>
-                                    <foreach name="sort" item="vo">
-                                        <option value="{$vo.id}">{$vo.title}</option>
-                                    </foreach>
+
                                 </select>
                             </div>
                         </div>
@@ -181,19 +179,34 @@
 
         document.onkeydown = function (e) {
             var e = window.event ? window.event : e;
-            if (e.keyCode == 13){
+            if (e.keyCode == 13) {
                 Save();
             }
         };
 
         $(function () {
-
-            var icon = '{$icon}';
-            var menu = '{$menu}';
+            var url = config.base_url + '/AuthRule/index';
+            var menu = '';
+            var icon = '';
+            $.ajax({
+                url     : url,
+                type    : 'POST',
+                async   : false,
+                success : function (res) {
+                    menu = res.list.rows;
+                }
+            });
+            $.ajax({
+                url     : url,
+                type    : 'POST',
+                async   : false,
+                data    : {fields : 'icon,title', field : 'menu_type', keywords : {0 : 'in', 1 : {0 : 0, 1 : 1, 2 : 2}}},
+                success : function (res) {
+                    icon = res.list.rows;
+                }
+            });
             var second = [];
             var third = [];
-            menu = JSON.parse(menu);
-            icon = JSON.parse(icon);
             var types = {
                 'default'         : {'icon' : 'fa fa-list'},
                 'Add'             : {'icon' : 'fa fa-plus'},
@@ -241,23 +254,41 @@
                 'types'   : types
             });
 
-
+            getSort();
         });
+        /**
+         * 获取顶级菜单
+         */
+        function getSort() {
+            var html = '';
+            $.ajax({
+                url     : config.base_url + '/AuthRule/index',
+                type    : 'POST',
+                data    : {field : 'menu_type', in_ : {0 : 0, 1 : 1, 2 : 2}},
+                success : function (res) {
+                    $.each(res.list.rows, function (i, v) {
+                        html += '<option value="' + v.id + '">' + v.title + '</option>';
+                    });
+                    $('#sort_id').append(html);
+                }
+            })
+        }
 
         //获取菜单信息
         function info(id) {
             $('#sort_id_temp').val(id);
             var param = {};
-            $.post("{:U('edit')}", {id : id}, function (info) {
+            var url = config.base_url + '/AuthRule/edit';
+            $.post(url, {id : id}, function (info) {
                 $(".rule-box").removeClass('form-group');
                 param = {title : '', menu_type_name : '', previous : '', rule : 'name'};
-                fill.fill_by_id(param, info, 2);
+                fill.fill_by_id(param, info.info, 2);
 
                 //对模态框写入数据
-                param = {id : '',sort_id:'', menu_type : 'menu_type', title_ : 'title', icon_ : 'icon', name : '', list_order : ''};
-                fill.fill_by_id(param, info, 1);
-                $("#menu_icon").removeClass().addClass(info.icon);
-                $("#icon").removeClass().addClass(info.icon);
+                param = {id : '', sort_id : '', menu_type : 'menu_type', title_ : 'title', icon_ : 'icon', name : '', list_order : ''};
+                fill.fill_by_id(param, info.info, 1);
+                $("#menu_icon").removeClass().addClass(info.info.icon);
+                $("#icon").removeClass().addClass(info.info.icon);
             }, "JSON");
         }
 
@@ -292,23 +323,23 @@
         function Save() {
             var sort_id = $('#sort_id').val();
             if (!sort_id) {
-                return message.message({status:2,info:'Previous Can not be none !'});
+                return message.message({code : 400, info : 'Previous Can not be none !'});
             }
             var menu_type = $('#menu_type').val();
             if (!menu_type) {
-                return message.message({status:2,info:'Menu_type Can not be none !'});
+                return message.message({code : 400, info : 'Menu_type Can not be none !'});
             }
             var title_ = $('#title_').val();
             if (!title_) {
-                return message.message({status:2,info:'Title Can not be none !'});
+                return message.message({code : 400, info : 'Title Can not be none !'});
             }
             var name = $('#name').val();
             if (!name) {
-                return message.message({status:2,info:'Name Can not be none !'});
+                return message.message({code : 400, info : 'Name Can not be none !'});
             }
 
 
-            var url = "{:U('Add')}";
+            var url = config.base_url + '/AuthRule/Add';
             var data = $("form").serialize();
             $('#add').modal('hide');
             submit.submit(url, data);

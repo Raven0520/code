@@ -37,6 +37,7 @@ var fill = {
 
 var submit = {
     submit : function (url, data, id) {
+        if (!id) id = 'submitForm';
         if (!data) {
             data = $('#' + id).serialize();
         }
