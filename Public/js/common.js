@@ -36,11 +36,10 @@ var fill = {
  */
 
 var submit = {
-    submit : function (url, data) {
+    submit : function (url, data, id) {
         if (!data) {
-            data = $('#submitForm').serialize();
+            data = $('#' + id).serialize();
         }
-
         $.post(url, data, function (res) {
             message.message(res);
         }, "JSON");
@@ -55,18 +54,13 @@ var getInfo = {
 
     getToken : function (url, set, type) {
         var data = $('form').serialize();
-        $.ajax({
-            url     : url,
-            type    : 'POST',
-            data    : data,
-            success : function (res) {
-                if (res.code == 200) {
-                    return fill.fill_by_id(set, res.info, type);
-                } else {
-                    message.message({info : res.info, code : res.code});
-                }
+        $.post(url, data, function (res) {
+            if (res.code == 200) {
+                return fill.fill_by_id(set, res.info, type);
+            } else {
+                message.message({info : res.info, code : res.code});
             }
-        })
+        }, "JSON");
     },
 
     getInfo : function (url, data, set) {
@@ -113,9 +107,10 @@ var check = {
 
 var message = {
     message : function (info) {
+        console.log(info);
         if (info.code == 200) {
             return swal({
-                title             : info.info,
+                title             : info.message,
                 timer             : 1500,
                 type              : 'success',
                 showConfirmButton : false
@@ -128,7 +123,7 @@ var message = {
             })
         } else if (info.code == 400) {
             return swal({
-                title             : info.info,
+                title             : info.message,
                 timer             : 1500,
                 type              : 'error',
                 showConfirmButton : false
@@ -153,7 +148,7 @@ var message = {
                 }
             })
         } else {
-            return swal(info.info, '', 'error');
+            return swal(info.message, '', 'error');
         }
     },
 
