@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>INSPINIA | Register</title>
+
+    <link href="/Public/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/Public/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="/Public/css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="/Public/css/animate.css" rel="stylesheet">
+    <link href="/Public/css/style.css" rel="stylesheet">
+    <link href="/Public/js/sweetalert/dist/sweetalert.css" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg" style="background: url('/Public/img/login.jpg'); background-size: 100%">
+
+    <div class="middle-box text-center loginscreen   animated fadeInDown">
+        <div>
+            <div>
+
+                <h1 class="logo-name">Code</h1>
+
+            </div>
+            <h3>Register to Code</h3>
+            <p>Create account to see it in action.</p>
+            <form id="submitForm">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Name" name="nickname" id="nickname">
+                </div>
+                <div class="form-group">
+                    <input type="email" class="form-control" placeholder="Email" name="username" id="username">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" placeholder="Password" name="password" id="password">
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Token" name="token" id="token">
+                </div>
+                <div class="form-group">
+                    <p>Contacts with me to get the Token !</p>
+                    <!--<div class="checkbox i-checks"><label> <input type="checkbox"><i></i> Send The Token To Your Email ? </label></div>-->
+                </div>
+                <button type="button" onclick="register()" class="btn btn-primary block full-width m-b">Register</button>
+
+                <p class="text-muted text-center"><small>Already have an account?</small></p>
+                <a class="btn btn-sm btn-white btn-block" href="{:U('index')}">Login</a>
+            </form>
+            <!--<p class="m-t"> <small>Inspinia we app framework base on Bootstrap 3 &copy; 2014</small> </p>-->
+        </div>
+    </div>
+
+    <!-- Mainly scripts -->
+    <script src="/Public/js/jquery-2.1.1.js"></script>
+    <script src="/Public/js/bootstrap.min.js"></script>
+    <!-- iCheck -->
+    <script src="/Public/js/plugins/iCheck/icheck.min.js"></script>
+
+    <script src="/Public/js/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="/Public/js/common.js"></script>
+
+    <script>
+
+        $(document).ready(function(){
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green'
+            });
+        });
+
+        function register() {
+            var name = $('#nickname').val();
+            if (!name){
+                return message.message({info:'Name Can Not Be Empty !',status:2});
+            }
+            var email = $('#username').val();
+            if (!email){
+                return message.message({info:'Email Can Not Be Empty !',status:2});
+            }
+            var reg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+            if (!reg.test(email)){
+                return message.message({info:'邮箱格式错误',status:2});
+            }
+            var password = $('#password').val();
+            if (!password){
+                return message.message({info:'Password Can Not Be Empty !',status:2});
+            }
+            var token = $('#token').val();
+            if (!token){
+                return message.message({info:'Token Can Not Be Empty !',status:2});
+            }
+            var url = config.base_url + '/Api/Login/register';
+            submit.submit(url,'');
+        }
+    </script>
+</body>
+</html>

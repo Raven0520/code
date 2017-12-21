@@ -1,0 +1,317 @@
+<extend name="Common/index"/>
+<block name="header">
+    <link href="/Public/css/plugins/jsTree/style.min.css" rel="stylesheet">
+</block>
+
+<block name="content">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Menu List</h5>
+                        <div class="ibox-tools">
+                            <a class="add-link" data-toggle="modal" data-target="#add" onclick="add()">
+                                <i class="fa fa-plus"></i>
+                            </a>
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div id="tree">
+                            <ul>
+                                <li class="jstree-open">Site
+                                    <ul id="site" class="rule">
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Menu Detail</h5>
+                        <div class="ibox-tools">
+                            <a class="add-link" onclick="edit()">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="form-group rule-box">
+                            <label class="col-sm-3 control-label">Previous</label>
+                            <span id="previous"></span>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="form-group rule-box">
+                            <label class="col-sm-3 control-label">Menu Type</label>
+                            <span id="menu_type_name"></span>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="form-group rule-box">
+                            <label class="col-sm-3 control-label">Title</label>
+                            <span id="title"></span>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="form-group rule-box">
+                            <label class="col-sm-3 control-label">icon</label>
+                            <span id="menu_icon"></span>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="form-group rule-box">
+                            <label class="col-sm-3 control-label">Rule</label>
+                            <span id="rule"></span>
+                        </div>
+                    </div>
+                    <!--菜单id-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal inmodal" id="add" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content animated bounceInRight">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">Add Menu</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <input type="hidden" id="sort_id_temp">
+                        <input type="hidden" id="id" name="id">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Previous</label>
+                            <div class="col-sm-9">
+                                <select class="form-control m-b" name="sort_id" id="sort_id">
+                                    <option value="0">Top Menu</option>
+                                    <foreach name="sort" item="vo">
+                                        <option value="{$vo.id}">{$vo.title}</option>
+                                    </foreach>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Menu Type</label>
+                            <div class="col-sm-9">
+                                <select class="form-control m-b" name="menu_type" id="menu_type">
+                                    <option value="0">Menu</option>
+                                    <option value="1">Second Menu</option>
+                                    <option value="2">Window</option>
+                                    <option value="3">Button</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Title</label>
+                            <div class="col-sm-9">
+                                <input class="form-control m-b" name="title" id="title_"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Icon</label>
+                            <div class="col-sm-9">
+                                <input class="form-control m-b" name="icon" id="icon_" onblur="getIcon(this.value)"/>
+                                <span class="" id="icon" style="position: absolute; top: 5px; right: 24px; font-size: 24px;"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Rule</label>
+                            <div class="col-sm-9">
+                                <input class="form-control m-b" name="name" id="name"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">List_Order</label>
+                            <div class="col-sm-9">
+                                <input class="form-control m-b" name="list_order" id="list_order"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="Save()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+
+
+<block name="footer-end">
+    <script src="/Public/js/plugins/jsTree/jstree.min.js"></script>
+</block>
+
+<block name="script">
+
+    <style>
+        .jstree-open > .jstree-anchor > .fa-folder:before {
+            content: "\f07c";
+        }
+
+        .jstree-default .jstree-icon.none {
+            width: 0;
+        }
+    </style>
+
+    <script>
+
+        document.onkeydown = function (e) {
+            var e = window.event ? window.event : e;
+            if (e.keyCode == 13){
+                Save();
+            }
+        };
+
+        $(function () {
+
+            var icon = '{$icon}';
+            var menu = '{$menu}';
+            var second = [];
+            var third = [];
+            menu = JSON.parse(menu);
+            icon = JSON.parse(icon);
+            var types = {
+                'default'         : {'icon' : 'fa fa-list'},
+                'Add'             : {'icon' : 'fa fa-plus'},
+                'Edit'            : {'icon' : 'fa fa-pencil'},
+                'Del'             : {'icon' : 'fa fa-close'},
+                'Profile'         : {'icon' : 'fa fa-github'},
+                'GetToken'        : {'icon' : 'fa fa-key'},
+                'Change_Head_img' : {'icon' : 'fa fa-recycle'}
+            };
+            $.each(icon, function (i, v) {
+                types[v.title] = {'icon' : v.icon};
+            });
+
+            //加载菜单
+            var html, type;
+            $.each(menu, function (k, v) {
+                if (v.sort_id == 0) {
+                    type = '{"type":"' + v.title + '"}';
+                    html = "<li data-jstree='" + type + "')'><a href='#' onclick='info(" + v.id + ")'>" + v.title + "</a><ul id='sort_" + v.id + "'></ul></li>";
+                    $("#site").append(html);
+                } else if (v.menu_type == 1) {
+                    second.push(v);
+                } else {
+                    third.push(v);
+                }
+            });
+
+            $.each(second, function (k, v) {
+                type = '{"type":"' + v.title + '"}';
+                html = "<li data-jstree='" + type + "'><button style='border: none;padding: 0' class='btn-link' onclick='info(" + v.id + ")'>" + v.title + "</button><ul id='sort_" + v.id + "'></ul></li>";
+                $('#sort_' + v.sort_id).append(html);
+            });
+
+            $.each(third, function (k, v) {
+                type = '{"type":"' + v.title + '"}';
+                html = "<li data-jstree='" + type + "'><button style='border: none;padding: 0' class='btn-link' onclick='info(" + v.id + ")'>" + v.title + "</button></li>";
+                $('#sort_' + v.sort_id).append(html);
+            });
+
+            $('#tree').jstree({
+                'core'    : {
+                    'check_callback' : true
+                },
+                'plugins' : ['types', 'dnd'],
+                'types'   : types
+            });
+
+
+        });
+
+        //获取菜单信息
+        function info(id) {
+            $('#sort_id_temp').val(id);
+            var param = {};
+            $.post("{:U('edit')}", {id : id}, function (info) {
+                $(".rule-box").removeClass('form-group');
+                param = {title : '', menu_type_name : '', previous : '', rule : 'name'};
+                fill.fill_by_id(param, info, 2);
+
+                //对模态框写入数据
+                param = {id : '',sort_id:'', menu_type : 'menu_type', title_ : 'title', icon_ : 'icon', name : '', list_order : ''};
+                fill.fill_by_id(param, info, 1);
+                $("#menu_icon").removeClass().addClass(info.icon);
+                $("#icon").removeClass().addClass(info.icon);
+            }, "JSON");
+        }
+
+        function add() {
+            //清除模态框中的数据
+            var param = ['id', 'menu_type', 'title_', 'icon_', 'name', 'list_order'];
+            $('#icon').removeClass();
+            clean.clean_by_id(param, 1);
+            $('#sort_id').val($('#sort_id_temp').val());
+        }
+
+        //填充数据
+        function edit() {
+            var id = $("#id").val();
+            if (!id) {
+                return swal({
+                    title : 'ID can not be Empty !',
+                    type  : 'error'
+                });
+            }
+            $('#add').modal('show');
+        }
+
+        //预览图标
+        function getIcon(icon) {
+            $('#icon').removeClass().addClass(icon);
+            if (icon == '') {
+                $('#icon').removeClass();
+            }
+        }
+
+        function Save() {
+            var sort_id = $('#sort_id').val();
+            if (!sort_id) {
+                return message.message({status:2,info:'Previous Can not be none !'});
+            }
+            var menu_type = $('#menu_type').val();
+            if (!menu_type) {
+                return message.message({status:2,info:'Menu_type Can not be none !'});
+            }
+            var title_ = $('#title_').val();
+            if (!title_) {
+                return message.message({status:2,info:'Title Can not be none !'});
+            }
+            var name = $('#name').val();
+            if (!name) {
+                return message.message({status:2,info:'Name Can not be none !'});
+            }
+
+
+            var url = "{:U('Add')}";
+            var data = $("form").serialize();
+            $('#add').modal('hide');
+            submit.submit(url, data);
+        }
+    </script>
+</block>

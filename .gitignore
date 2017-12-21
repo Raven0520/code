@@ -1,0 +1,8 @@
+.idea
+Runtime
+db.php
+config.php
+ueditor/*
+uploads/*
+upload/*
+.phpstorm.meta.php

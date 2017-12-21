@@ -1,0 +1,71 @@
+<extend name="Common/index" />
+
+<block name="action-area">
+    <div class="col-sm-8">
+        <div class="title-action">
+            <input type="text" id="token" style="border: none">
+            <a id="register" onclick="getToken()" class="btn btn-primary">Register Token</a>
+        </div>
+    </div>
+
+    <form>
+        <input type="hidden" name="id" value="" id="id">
+        <input type="hidden" name="name" value="register">
+        <input type="hidden" name="expired" value="1">
+        <input type="hidden" name="action" value="1" id="action">
+    </form>
+</block>
+
+<block name="content">
+    <div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <foreach name="data" item="v">
+            <div class="col-lg-4">
+                <div class="contact-box">
+                    <a href="{:U('Profile/index',array('id'=>$v['id']))}">
+                        <div class="col-sm-4">
+                            <div class="text-center">
+                                <img alt="image" class="img-circle m-t-xs img-responsive" src="{$v.head_img}">
+                                <div class="m-t-xs font-bold">{$v.group}</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <h3><strong>{$v.nickname}</strong>
+                                <small>&nbsp;&nbsp;{$v.login_time|date='Y-m-d H:i',###}</small>
+                            </h3>
+                            <p><i class="fa fa-phone-square"></i> {$v.qq}</p>
+                            <p><i class="fa fa-qq"></i> {$v.qq}</p>
+                            <p><i class="fa fa-wechat"></i> {$v.qq}</p>
+                            <!--<p><i class="fa fa-weibo"></i> {$v.qq}</p>-->
+                            <!--<p><i class="fa fa-sign-in"></i> </p>-->
+                        </div>
+                        <div class="clearfix"></div>
+                    </a>
+                </div>
+            </div>
+        </foreach>
+    </div>
+    </div>
+</block>
+
+<block name="script">
+    <script>
+        var register = $('#register');
+        var token = $('#token');
+
+        function getToken() {
+            var action = $('#action');
+            getInfo.getToken(config.base_url + '/Config/getToken',{token:'value',id:'id'},1);
+            if (action.val() == 1){
+                action.val(2);
+                token.show();
+                register.html('Refresh Token');
+            }else {
+                action.val(1);
+                token.hide();
+                register.html('Register Token');
+            }
+        }
+
+    </script>
+</block>

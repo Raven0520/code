@@ -1,0 +1,39 @@
+<!-- Mainly scripts -->
+<script src="/Public/js/jquery-2.1.1.js"></script>
+<script src="/Public/js/bootstrap.min.js"></script>
+<script src="/Public/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="/Public/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<block name="footer-mid"></block>
+<!-- Custom and plugin javascript -->
+<script src="/Public/js/inspinia.js"></script>
+<script src="/Public/js/plugins/pace/pace.min.js"></script>
+<script src="/Public/js/sweetalert/dist/sweetalert.min.js"></script>
+<script src="/Public/js/config.js"></script>
+<script src="/Public/js/common.js"></script>
+<block name="footer-end"></block>
+<script>
+    $(function () {
+        var user = '{$User.id}';
+        if (user) {
+            $('#sign_in').hide();
+            $('#sign_out').show();
+        } else {
+            $('#sign_in').show();
+            $('#sign_out').hide();
+        }
+        var src = '{$User.head_img}';
+        if (!src){
+            src = '/Public/head_img/default.png';
+        }
+        $('#nav_head_img').attr('src',src);
+    });
+
+    function profile(id) {
+        if (!id){
+            message.message({info:'请先登录',status:2});
+        }else {
+            window.location.href = "{:U('Profile/index')}" + '?id=' + id;
+        }
+    }
+
+</script>

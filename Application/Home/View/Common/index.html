@@ -1,0 +1,75 @@
+<include file="Common/Head"/>
+
+<body class="">
+
+<div id="wrapper">
+
+    <include file="Common/Nav"/>
+
+    <div id="page-wrapper" class="gray-bg">
+        <include file="Common/Top"/>
+        <div class="row wrapper border-bottom white-bg page-heading">
+            <div class="col-sm-4">
+                <h2>
+                    <block name="main_title">{:strtoupper(ACTION_NAME) == "INDEX" ? CONTROLLER_NAME : strtoupper(ACTION_NAME)}</block>
+                </h2>
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    <li>
+                        <a href="/{:CONTROLLER_NAME}">{:CONTROLLER_NAME}</a>
+                    </li>
+                    <li class="active">
+                        <strong>{:ACTION_NAME}</strong>
+                    </li>
+                </ol>
+            </div>
+            <block name="action-area">
+                <div class="col-sm-8">
+                    <div class="title-action">
+                        <a href="empty_page.html" class="btn btn-primary">This is action area</a>
+                    </div>
+                </div>
+            </block>
+        </div>
+
+
+        <block name="content">
+            <div class="wrapper wrapper-content">
+                <h3 class="font-bold">This is page content</h3>
+                <div class="error-desc">
+                    You can create here any grid layout you want. And any variation layout you imagine:) Check out
+                    main dashboard and other site. It use many different layout.
+                    <br/><a href="index.html" class="btn btn-primary m-t">Dashboard</a>
+                </div>
+            </div>
+
+        </block>
+        <div class="footer">
+            <div class="pull-right">
+                10GB of <strong>250GB</strong> Free.
+            </div>
+            <div>
+                <strong>Copyright</strong> Example Company &copy; 2014-2015
+            </div>
+        </div>
+
+    </div>
+</div>
+<input type="hidden" id="auth_status" value="{$auth_status}">
+<include file="Common/Footer"/>
+
+
+</body>
+
+</html>
+<script>
+    $(function () {
+        var status = $('#auth_status').val();
+        if (status == 9){
+            message.message({status:status,url:document.referrer});
+        }
+    })
+</script>
+<block name="script"></block>

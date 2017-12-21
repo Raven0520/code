@@ -1,0 +1,15 @@
+<extend name="Common/index"/>
+
+
+<block name="script">
+
+    <script>
+        $(function () {
+            message.message({
+                status : 2,
+                info   : '您没有权限访问该页面！',
+                url    : document.referrer
+            })
+        })
+    </script>
+</block>

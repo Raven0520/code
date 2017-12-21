@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Code Manager</title>
+
+    <link href="/Public/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/Public/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/Public/css/animate.css" rel="stylesheet">
+    <link href="/Public/css/style.css" rel="stylesheet">
+    <link href="/Public/js/sweetalert/dist/sweetalert.css" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg" style="background: url('/Public/img/login.jpg'); background-size: 100%">
+
+<div class="middle-box text-center loginscreen animated fadeInDown">
+    <div>
+        <div>
+
+            <h1 class="logo-name">Code</h1>
+
+        </div>
+        <h3>Welcome</h3>
+        <!--<p>Perfectly designed and precisely prepared admin theme with over 50 pages with extra new web app views.</p>-->
+        <p>Happy Coding , Happy Life !</p>
+        <form class="m-t" id="submitForm">
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Nickname、Email" name="username" id="username">
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" placeholder="Password" name="password" id="password">
+            </div>
+            <button type="button" id="loginBtn" onclick="login()" class="btn btn-primary block full-width m-b">Login</button>
+
+            <!--<a onclick="message.undo()"><small>Forgot password?</small></a>-->
+            <p class="text-muted text-center"><small>Do not have an account?</small></p>
+            <a class="btn btn-sm btn-white btn-block" href="{:U('register')}">Create an account</a>
+        </form>
+    </div>
+</div>
+
+<!-- Mainly scripts -->
+<script src="/Public/js/jquery-2.1.1.js"></script>
+<script src="/Public/js/bootstrap.min.js"></script>
+<script src="/Public/js/sweetalert/dist/sweetalert.min.js"></script>
+<script src="/Public/js/common.js"></script>
+<script>
+
+    document.onkeydown = function (e) {
+        var e = window.event ? window.event : e;
+        if (e.keyCode == 13){
+            var btn = document.getElementById("loginBtn");
+            btn.onclick();
+        }
+    };
+    $(function () {
+        $('#username').focus();
+    });
+
+    function login() {
+        var email = $('#username').val();
+        if (!email){
+            return message.message({info:'Email Can Not Be Empty !',status:2});
+        }
+        var password = $('#password').val();
+        if (!password){
+            return message.message({info:'Password Can Not Be Empty !',status:2});
+        }
+        var url = "{:U('login')}";
+        submit.submit(url,'');
+    }
+</script>
+</body>
+
+</html>
