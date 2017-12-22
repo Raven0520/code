@@ -210,6 +210,7 @@
             var project_id = "{$User.project_id}";
             var project = '';
             var module = '';
+            var controller = '';
             var html = '';
             var type = '';
             var option = '';
@@ -221,17 +222,12 @@
                 success : function (res) {
                     project = res.info;
                     fill.fill_by_id({project_name : 'name'}, project, 2);
-                    fill.fill_by_id({module_project_id : 'id'}, project, 1);
+                    fill.fill_by_id({module_project_id : 'id', controller_project_id : 'id'}, project, 1);
                 }
             });
-            $.ajax({
-                url     : config.base_url + '/Module/index',
-                type    : 'POST',
-                async   : false,
-                success : function (res) {
-                    module = res.list.rows;
-                }
-            });
+
+            module = getInfo.getData(config.base_url + '/Module/index');
+            controller = getInfo.getData(config.base_url + '/Controller/index');
 
             var types = {
                 'default'         : {'icon' : 'fa fa-list'},
@@ -277,6 +273,13 @@
                 type = '{"type":"module_"}';
                 html = "<li data-jstree='" + type + "'><button style='border: none;padding: 0' class='btn-link'>" + v.name + "</button><ul id='" + v.id + "_" + v.name + "'></ul></li>";
                 $('#' + v.id + '_module').append(html);
+            });
+
+            //加载控制器
+            $.each(controller, function (i, v) {
+                type = '{"type":"controller"}';
+                html = "<li data-jstree='" + type + "'><button style='border: none;padding: 0' class='btn-link'>" + v.name + "</button><ul id='controller_" + v.id + "'></ul></li>";
+                $('#' + v.module_name + '_Controller').append(html);
             });
 
             $('#tree').jstree({
@@ -369,6 +372,18 @@
             var data = $("#module_form").serialize();
             var url = config.base_url + '/Module/Add';
             $('#add_module').modal('toggle');
+            submit.submit(url, data);
+        }
+
+        function save_controller() {
+            var name = $('#controller_name').val();
+            if (!name) return message.message({code : 400, message : 'Controller Name Can not be none !'});
+            var module_id = $('#controller_module_id').val();
+            if (!module_id) return message.message({code : 400, message : 'Please choose module !'});
+
+            var data = $("#controller_form").serialize();
+            var url = config.base_url + '/Controller/Add';
+            $('#add_controller').modal('toggle');
             submit.submit(url, data);
         }
         /**

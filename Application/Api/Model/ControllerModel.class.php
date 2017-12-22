@@ -11,7 +11,11 @@ namespace Api\Model;
 
 class ControllerModel extends CommonModel
 {
-    protected $_validate = [
-        ['name','','控制器名称已经存在！',0,'unique',3]    // 新增或更新的时候验证name字段是否唯一
-    ];
+    public function _after_select(&$result, $options)
+    {
+        $module = M('module')->getField('id,name');
+        foreach ($result as $k => $v) {
+            $result[$k]['module_name'] = $module[$v['module_id']];
+        }
+    }
 }

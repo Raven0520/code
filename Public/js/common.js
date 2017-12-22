@@ -1,7 +1,7 @@
 /**
  * Created by raven on 2017/5/23.
  */
-
+var temp_data = '';
 var clean = {
 
     clean_by_id : function (tag, type) {
@@ -90,6 +90,18 @@ var getInfo = {
                 $('#' + id).append(option);
             });
         }, "JSON")
+    },
+
+    getData : function (url) {
+        $.ajax({
+            url     : url,
+            type    : 'POST',
+            async   : false,
+            success : function (res) {
+                temp_data = res.list.rows;
+            }
+        });
+        return temp_data;
     }
 };
 
