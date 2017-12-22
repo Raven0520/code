@@ -4,6 +4,7 @@
 
 var config = {
     base_url    : 'http://api.' + document.domain,
+    html_url    : 'http://' + document.domain,
     current_url : window.location.pathname,
     search_url  : window.location.search
 };

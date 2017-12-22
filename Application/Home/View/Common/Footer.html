@@ -1,16 +1,9 @@
 <!-- Mainly scripts -->
 <script src="/Public/js/jquery-2.1.1.js"></script>
+<script src="/Public/js/config.js"></script>
 
 <script>
     $(function () {
-        var user = '{$User.id}';
-        if (user) {
-            $('#sign_in').hide();
-            $('#sign_out').show();
-        } else {
-            $('#sign_in').show();
-            $('#sign_out').hide();
-        }
         var src = '{$User.head_img}';
         if (!src) {
             src = '/Public/head_img/default.png';
@@ -28,7 +21,9 @@
     }
 
     function init() {
-        var url = config.base_url + '/AuthRule/getMenu';
+        var path = config.current_url.split('/');
+        if (!path[1]) path[1] = 'index';
+        var url = config.base_url + '/' + path[1] + '/getMenu';
         var html = '';
         var menu = '';
         $.ajax({
@@ -64,6 +59,16 @@
 <script src="/Public/js/inspinia.js"></script>
 <script src="/Public/js/plugins/pace/pace.min.js"></script>
 <script src="/Public/js/sweetalert/dist/sweetalert.min.js"></script>
-<script src="/Public/js/config.js"></script>
 <script src="/Public/js/common.js"></script>
 <block name="footer-end"></block>
+
+<script>
+    function login_out() {
+        var url = config.base_url + '/Login/loginOut';
+        $.post(url, {}, function (res) {
+            if (res.code == 200) {
+                window.location.href = "{:U('/Login')}";
+            }
+        }, "JSON")
+    }
+</script>

@@ -32,6 +32,11 @@ class CommonModel extends RelationModel
         if (!$data) {
             return false;
         }
-        return empty ($data [$this->getPk()]) ? $this->add() : $this->save();
+        if (empty ($data [$this->getPk()])) {
+            $data [$this->getPk()] = $this->add();
+        } else {
+            $this->save();
+        }
+        return $data [$this->getPk()];
     }
 }

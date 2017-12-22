@@ -19,7 +19,11 @@ class EmptyController extends Controller
     protected function _initialize()
     {
         $this->user = S('User_' . getIp());
-//        $this->checkAuth();
+        if (!$this->user) {
+            redirect('/Login');
+        }
+        $this->assign('User', $this->user);
+        $this->checkAuth();
     }
 
     public function _empty()

@@ -19,9 +19,52 @@ class EmptyController extends CommonController
     protected function _initialize()
     {
         parent::_initialize();
+        $this->where['status'] = ['neq', -1];
+
         $this->user = S('User_' . getIp());
         '' != I('post.status') && $this->where['status'] = I('post.status');
         $this->checkAuth();
+    }
+
+    /**
+     * 获取菜单
+     * @param $type
+     */
+    public function getMenu($type = 0)
+    {
+        //获取菜单
+        $where = ['status' => 1];
+        if ($type == 1) {
+            $group       = M('auth_group')->where(['id' => $this->user['group_id']])->getField('rules');
+            $group       = explode(',', $group);
+            $where['id'] = ['in', $group];
+        }
+        $rule = $this->select('AuthRule', $where, true, 'list_order asc');
+        $menu = [];
+        foreach ($rule as $k => $v) {
+            $second = [];
+            if ($v['sort_id'] == '0') {
+                $menu[$k] = $v;
+                foreach ($rule as $value) {
+                    if ($value['sort_id'] == $v['id']) {
+                        $value['title'] == CONTROLLER_NAME && $menu[$k]['class'] = 'active';
+                        $second[$value['id']] = $value;
+                        $third                = [];
+                        foreach ($rule as $item) {
+                            if ($item['sort_id'] == $value['id']) {
+                                $third[] = $item;
+                            }
+                        }
+                        $second[$value['id']]['third'] = $third;
+                        sort($menu[$k]['second'][$value['id']]['third']);
+                    }
+                }
+                $menu[$k]['second'] = $second;
+                sort($menu[$k]['second']);
+            }
+        }
+//        sort($menu);
+        $this->successResponse(['menu' => $menu]);
     }
 
     /**
@@ -51,7 +94,7 @@ class EmptyController extends CommonController
     public function add()
     {
         if (IS_POST) {
-            $url = U('/' . CONTROLLER_NAME);
+            $url = U('/' . CONTROLLER_NAME, '', '');
             if (I('skipping_link')) {
                 $url = I('skipping_link');
             }
@@ -87,11 +130,11 @@ class EmptyController extends CommonController
 
         $this->auth = $auth->check('/' . $controller . '/' . $action, $this->user['id']);
         'Index' == $controller && $action == 'index' && $this->auth = true;
+        $action == 'getMenu' && $this->auth = true;
         'Blog' == $controller && $action == 'index' && $this->auth = true;
 
         if ($this->auth == false) {
-            $this->assign('auth_status', 9);
-            IS_AJAX && $this->ajaxReturn(['code' => 401]);
+            $this->errorResponse('没有权限');
         }
     }
 }

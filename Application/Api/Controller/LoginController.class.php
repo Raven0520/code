@@ -75,9 +75,9 @@ class LoginController extends CommonController
      */
     public function loginOut()
     {
-        $user = session('User');
-        $this->updateUser($user['id']);
-        session('User', null);
-        return redirect('/login');
+        $user = S('User_' . getIp());
+        $this->updateUser($user);
+        S('User_' . getIp(), null);
+        $this->successResponse();
     }
 }
