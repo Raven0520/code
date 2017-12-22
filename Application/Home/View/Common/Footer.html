@@ -1,16 +1,6 @@
 <!-- Mainly scripts -->
 <script src="/Public/js/jquery-2.1.1.js"></script>
-<script src="/Public/js/bootstrap.min.js"></script>
-<script src="/Public/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-<script src="/Public/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-<block name="footer-mid"></block>
-<!-- Custom and plugin javascript -->
-<script src="/Public/js/inspinia.js"></script>
-<script src="/Public/js/plugins/pace/pace.min.js"></script>
-<script src="/Public/js/sweetalert/dist/sweetalert.min.js"></script>
-<script src="/Public/js/config.js"></script>
-<script src="/Public/js/common.js"></script>
-<block name="footer-end"></block>
+
 <script>
     $(function () {
         var user = '{$User.id}';
@@ -22,18 +12,58 @@
             $('#sign_out').hide();
         }
         var src = '{$User.head_img}';
-        if (!src){
+        if (!src) {
             src = '/Public/head_img/default.png';
         }
-        $('#nav_head_img').attr('src',src);
+        $('#nav_head_img').attr('src', src);
+        init();
     });
 
     function profile(id) {
-        if (!id){
-            message.message({info:'请先登录',status:2});
-        }else {
+        if (!id) {
+            message.message({info : '请先登录', status : 2});
+        } else {
             window.location.href = "{:U('Profile/index')}" + '?id=' + id;
         }
     }
 
+    function init() {
+        var url = config.base_url + '/AuthRule/getMenu';
+        var html = '';
+        var menu = '';
+        $.ajax({
+            url     : url,
+            type    : 'POST',
+            data    : {type : 1},
+            async   : false,
+            success : function (res) {
+                menu = res.menu;
+                $.each(menu, function (i, v) {
+                    html += '<li class="' + v.class + '">' +
+                        '<a href="' + v.name + '"><i class="' + v.icon + '"></i><span class="nav-label">' + v.title + '</span> <span class="fa arrow"></span></a>' +
+                        '<ul class="nav nav-second-level">';
+                    if (v.second) {
+                        $.each(v.second, function (k, vo) {
+                            html += '<li><a href="' + vo.name + '"><i class="' + vo.icon + '"></i>' + vo.title + '</a></li>';
+                        });
+                    }
+                    html += '</ul> </li>';
+                });
+                $('#side-menu').append(html);
+            }
+        });
+    }
+
 </script>
+
+<script src="/Public/js/bootstrap.min.js"></script>
+<script src="/Public/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="/Public/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<block name="footer-mid"></block>
+<!-- Custom and plugin javascript -->
+<script src="/Public/js/inspinia.js"></script>
+<script src="/Public/js/plugins/pace/pace.min.js"></script>
+<script src="/Public/js/sweetalert/dist/sweetalert.min.js"></script>
+<script src="/Public/js/config.js"></script>
+<script src="/Public/js/common.js"></script>
+<block name="footer-end"></block>

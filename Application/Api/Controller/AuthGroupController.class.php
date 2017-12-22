@@ -6,12 +6,12 @@
  * Time: 下午1:28
  */
 
-namespace Home\Controller;
+namespace Api\Controller;
 
 
 class AuthGroupController extends EmptyController
 {
-    public function index()
+    /*public function index()
     {
         $menu = $this->select('AuthRule',['sort_id'=>0,'status'=>1],'id,title,icon,name','list_order');
         foreach ($menu as $k => $v){
@@ -30,5 +30,5 @@ class AuthGroupController extends EmptyController
         $this->assign('menu',$menu);
         $this->assign('AuthGroup',$this->getList());
         $this->display();
-    }
+    }*/
 }

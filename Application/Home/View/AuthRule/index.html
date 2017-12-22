@@ -191,6 +191,7 @@
             $.ajax({
                 url     : url,
                 type    : 'POST',
+                data    : {order : 'list_order desc'},
                 async   : false,
                 success : function (res) {
                     menu = res.list.rows;

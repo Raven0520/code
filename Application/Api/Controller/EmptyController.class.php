@@ -28,11 +28,11 @@ class EmptyController extends CommonController
      * 首页获取数据
      * @param string $field
      * @param string $like
-     * @param string $in
+     * @param string $in_
      * @param bool $fields
      * @param string $order
      */
-    public function index($field = '', $like = '', $in_ = '', $fields = true, $order = 'list_order desc')
+    public function index($field = '', $like = '', $in_ = '', $fields = true, $order = '')
     {
         if (IS_POST) {
             if ($field && $like) {
@@ -90,9 +90,6 @@ class EmptyController extends CommonController
         'Blog' == $controller && $action == 'index' && $this->auth = true;
 
         if ($this->auth == false) {
-            if (empty($this->user)) {
-                redirect('/login');
-            }
             $this->assign('auth_status', 9);
             IS_AJAX && $this->ajaxReturn(['code' => 401]);
         }

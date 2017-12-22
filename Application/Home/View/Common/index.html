@@ -48,7 +48,7 @@
         </block>
         <div class="footer">
             <!--<div class="pull-right">-->
-                <!--10GB of <strong>250GB</strong> Free.-->
+            <!--10GB of <strong>250GB</strong> Free.-->
             <!--</div>-->
             <div>
                 <strong>Copyright</strong> Raven &copy; 2017-2020
@@ -67,8 +67,11 @@
 <script>
     $(function () {
         var status = $('#auth_status').val();
-        if (status == 401){
-            message.message({code:status,url:document.referrer});
+        if (status == 401) {
+            var url = document.referrer;
+            if (!url) url = '/Login';
+            console.log(document.referrer);
+            message.message({code : status, url : url});
         }
     })
 </script>
