@@ -9,7 +9,7 @@
             src = '/Public/head_img/default.png';
         }
         $('#nav_head_img').attr('src', src);
-        init();
+        init_();
     });
 
     function profile(id) {
@@ -20,7 +20,7 @@
         }
     }
 
-    function init() {
+    function init_() {
         var path = config.current_url.split('/');
         if (!path[1]) path[1] = 'index';
         var url = config.base_url + '/' + path[1] + '/getMenu';

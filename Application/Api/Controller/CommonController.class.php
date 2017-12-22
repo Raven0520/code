@@ -36,6 +36,7 @@ class CommonController extends Controller
      * @param $id
      * @param bool $field
      * @param mixed|string $model
+     * @param array $where
      * @param null $name
      * @return mixed
      */

@@ -13,6 +13,11 @@ var clean = {
                 $('#' + v).html('');
             }
         })
+    },
+
+    reset_form : function (dom, btn) {
+        $(dom).click();
+        $('#save_btn').val(btn);
     }
 };
 

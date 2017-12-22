@@ -33,7 +33,7 @@ class EmptyController extends CommonController
     public function getMenu($type = 0)
     {
         //获取菜单
-        $where = ['status' => 1];
+        $where = ['status' => 1, 'show' => 1];
         if ($type == 1) {
             $group       = M('auth_group')->where(['id' => $this->user['group_id']])->getField('rules');
             $group       = explode(',', $group);
@@ -134,7 +134,7 @@ class EmptyController extends CommonController
         'Blog' == $controller && $action == 'index' && $this->auth = true;
 
         if ($this->auth == false) {
-            $this->errorResponse('没有权限');
+            $this->errorResponse('没有<< ' . $action . ' >>权限');
         }
     }
 }

@@ -7,7 +7,7 @@
 <block name="action-area">
     <div class="col-sm-8">
         <div class="title-action">
-            <a href="empty_page.html" class="btn btn-primary" id="project_name"></a>
+            <a href="#" class="btn btn-info" id="project_name"></a>
         </div>
     </div>
 </block>
@@ -18,10 +18,13 @@
             <div class="col-lg-6">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>Menu List</h5>
+                        <h5>Project </h5>
                         <div class="ibox-tools">
-                            <a class="add-link" data-toggle="modal" data-target="#add" onclick="add()">
-                                <i class="fa fa-plus"></i>
+                            <a class="add-link" data-toggle="modal" data-target="#add_module" onclick="clean.reset_form('#module_reset','module_save')">
+                                <i class="fa fa-folder"></i>
+                            </a>
+                            <a class="add-link" data-toggle="modal" data-target="#add_controller" onclick="clean.reset_form('#controller_reset','controller_save')">
+                                <i class="fa fa-copyright"></i>
                             </a>
                             <a class="collapse-link">
                                 <i class="fa fa-chevron-up"></i>
@@ -34,8 +37,8 @@
                     <div class="ibox-content">
                         <div id="tree">
                             <ul>
-                                <li class="jstree-open">Site
-                                    <ul id="site" class="rule">
+                                <li class="jstree-open">App
+                                    <ul id="app" class="rule">
                                     </ul>
                                 </li>
                             </ul>
@@ -95,6 +98,9 @@
             </div>
         </div>
     </div>
+
+    <include file="Module/add"/>
+    <include file="Controller/add"/>
 
     <div class="modal inmodal" id="add" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
@@ -160,11 +166,13 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="Save()">Save</button>
+                    <button type="button" class="btn btn-primary">Save</button>
                 </div>
             </div>
         </div>
     </div>
+    <!--隐藏域-->
+    <input type="hidden" id="save_btn" value="module_save">
 </block>
 
 
@@ -189,34 +197,42 @@
         document.onkeydown = function (e) {
             var e = window.event ? window.event : e;
             if (e.keyCode == 13) {
-                Save();
+                save();
             }
         };
 
         $(function () {
-            var url = config.base_url + '/AuthRule/index';
-            var menu = '';
-            var icon = '';
+            init();
+            getSort();
+        });
+
+        function init() {
+            var project_id = "{$User.project_id}";
+            var project = '';
+            var module = '';
+            var html = '';
+            var type = '';
+            var option = '';
             $.ajax({
-                url     : url,
+                url     : config.base_url + '/Project/edit',
                 type    : 'POST',
-                data    : {order : 'list_order desc'},
+                data    : {id : project_id},
                 async   : false,
                 success : function (res) {
-                    menu = res.list.rows;
+                    project = res.info;
+                    fill.fill_by_id({project_name : 'name'}, project, 2);
+                    fill.fill_by_id({module_project_id : 'id'}, project, 1);
                 }
             });
             $.ajax({
-                url     : url,
+                url     : config.base_url + '/Module/index',
                 type    : 'POST',
                 async   : false,
-                data    : {fields : 'icon,title', field : 'menu_type', keywords : {0 : 'in', 1 : {0 : 0, 1 : 1, 2 : 2}}},
                 success : function (res) {
-                    icon = res.list.rows;
+                    module = res.list.rows;
                 }
             });
-            var second = [];
-            var third = [];
+
             var types = {
                 'default'         : {'icon' : 'fa fa-list'},
                 'Add'             : {'icon' : 'fa fa-plus'},
@@ -224,36 +240,43 @@
                 'Del'             : {'icon' : 'fa fa-close'},
                 'Profile'         : {'icon' : 'fa fa-github'},
                 'GetToken'        : {'icon' : 'fa fa-key'},
-                'Change_Head_img' : {'icon' : 'fa fa-recycle'}
+                'Change_Head_img' : {'icon' : 'fa fa-recycle'},
+                'module'          : {'icon' : 'fa fa-folder'},
+                'module_'         : {'icon' : 'fa fa-folder-o'},
+                'controller'      : {'icon' : 'fa fa-copyright'}
             };
-            $.each(icon, function (i, v) {
-                types[v.title] = {'icon' : v.icon};
+            option = '';
+            //加载模块
+            $.each(module, function (i, v) {
+                type = '{"type":"module"}';
+                html = "<li data-jstree='" + type + "')'><a href='#' onclick='info(" + v.id + ")'>" + v.name + "</a><ul id='" + v.name + "_module'></ul></li>";
+                option += '<option value="' + v.id + '">' + v.name + '</option>';
+                $("#app").append(html);
             });
+            $('#controller_module_id').append(option);
 
-            //加载菜单
-            var html, type;
-            $.each(menu, function (k, v) {
-                if (v.sort_id == 0) {
-                    type = '{"type":"' + v.title + '"}';
-                    html = "<li data-jstree='" + type + "')'><a href='#' onclick='info(" + v.id + ")'>" + v.title + "</a><ul id='sort_" + v.id + "'></ul></li>";
-                    $("#site").append(html);
-                } else if (v.menu_type == 1) {
-                    second.push(v);
-                } else {
-                    third.push(v);
-                }
-            });
-
-            $.each(second, function (k, v) {
-                type = '{"type":"' + v.title + '"}';
-                html = "<li data-jstree='" + type + "'><button style='border: none;padding: 0' class='btn-link' onclick='info(" + v.id + ")'>" + v.title + "</button><ul id='sort_" + v.id + "'></ul></li>";
-                $('#sort_' + v.sort_id).append(html);
-            });
-
-            $.each(third, function (k, v) {
-                type = '{"type":"' + v.title + '"}';
-                html = "<li data-jstree='" + type + "'><button style='border: none;padding: 0' class='btn-link' onclick='info(" + v.id + ")'>" + v.title + "</button></li>";
-                $('#sort_' + v.sort_id).append(html);
+            var module_ = {
+                0  : {name : 'Common', id : 'Api'},
+                1  : {name : 'Conf', id : 'Api'},
+                2  : {name : 'Controller', id : 'Api'},
+                3  : {name : 'Model', id : 'Api'},
+                4  : {name : 'View', id : 'Api'},
+                5  : {name : 'Common', id : 'Html'},
+                6  : {name : 'Conf', id : 'Html'},
+                7  : {name : 'Controller', id : 'Html'},
+                8  : {name : 'Model', id : 'Html'},
+                9  : {name : 'View', id : 'Html'},
+                10 : {name : 'Common', id : 'Mobile'},
+                11 : {name : 'Conf', id : 'Mobile'},
+                12 : {name : 'Controller', id : 'Mobile'},
+                13 : {name : 'Model', id : 'Mobile'},
+                14 : {name : 'View', id : 'Mobile'}
+            };
+            //加载二级
+            $.each(module_, function (i, v) {
+                type = '{"type":"module_"}';
+                html = "<li data-jstree='" + type + "'><button style='border: none;padding: 0' class='btn-link'>" + v.name + "</button><ul id='" + v.id + "_" + v.name + "'></ul></li>";
+                $('#' + v.id + '_module').append(html);
             });
 
             $('#tree').jstree({
@@ -263,9 +286,91 @@
                 'plugins' : ['types', 'dnd'],
                 'types'   : types
             });
+            /*
+             var url = config.base_url + '/AuthRule/index';
+             var menu = '';
+             var icon = '';
+             $.ajax({
+             url     : url,
+             type    : 'POST',
+             data    : {order : 'list_order desc'},
+             async   : false,
+             success : function (res) {
+             menu = res.list.rows;
+             }
+             });
+             $.ajax({
+             url     : url,
+             type    : 'POST',
+             async   : false,
+             data    : {fields : 'icon,title', field : 'menu_type', keywords : {0 : 'in', 1 : {0 : 0, 1 : 1, 2 : 2}}},
+             success : function (res) {
+             icon = res.list.rows;
+             }
+             });
+             var second = [];
+             var third = [];
+             var types = {
+             'default'         : {'icon' : 'fa fa-list'},
+             'Add'             : {'icon' : 'fa fa-plus'},
+             'Edit'            : {'icon' : 'fa fa-pencil'},
+             'Del'             : {'icon' : 'fa fa-close'},
+             'Profile'         : {'icon' : 'fa fa-github'},
+             'GetToken'        : {'icon' : 'fa fa-key'},
+             'Change_Head_img' : {'icon' : 'fa fa-recycle'}
+             };
+             $.each(icon, function (i, v) {
+             types[v.title] = {'icon' : v.icon};
+             });
 
-            getSort();
-        });
+             //加载菜单
+             var html, type;
+             $.each(menu, function (k, v) {
+             if (v.sort_id == 0) {
+             type = '{"type":"' + v.title + '"}';
+             html = "<li data-jstree='" + type + "')'><a href='#' onclick='info(" + v.id + ")'>" + v.title + "</a><ul id='sort_" + v.id + "'></ul></li>";
+             $("#site").append(html);
+             } else if (v.menu_type == 1) {
+             second.push(v);
+             } else {
+             third.push(v);
+             }
+             });
+
+             $.each(second, function (k, v) {
+             type = '{"type":"' + v.title + '"}';
+             html = "<li data-jstree='" + type + "'><button style='border: none;padding: 0' class='btn-link' onclick='info(" + v.id + ")'>" + v.title + "</button><ul id='sort_" + v.id + "'></ul></li>";
+             $('#sort_' + v.sort_id).append(html);
+             });
+
+             $.each(third, function (k, v) {
+             type = '{"type":"' + v.title + '"}';
+             html = "<li data-jstree='" + type + "'><button style='border: none;padding: 0' class='btn-link' onclick='info(" + v.id + ")'>" + v.title + "</button></li>";
+             $('#sort_' + v.sort_id).append(html);
+             });
+
+             $('#tree').jstree({
+             'core'    : {
+             'check_callback' : true
+             },
+             'plugins' : ['types', 'dnd'],
+             'types'   : types
+             });*/
+        }
+        function save() {
+            var save_btn = $('#save_btn').val();
+            $('#' + save_btn).click();
+        }
+
+        function save_module() {
+            var name = $('#module_name').val();
+            if (!name) return message.message({code : 400, message : 'Module Name Can not be none !'});
+
+            var data = $("#module_form").serialize();
+            var url = config.base_url + '/Module/Add';
+            $('#add_module').modal('toggle');
+            submit.submit(url, data);
+        }
         /**
          * 获取顶级菜单
          */
@@ -330,29 +435,29 @@
             }
         }
 
-        function Save() {
-            var sort_id = $('#sort_id').val();
-            if (!sort_id) {
-                return message.message({code : 400, message : 'Previous Can not be none !'});
-            }
-            var menu_type = $('#menu_type').val();
-            if (!menu_type) {
-                return message.message({code : 400, message : 'Menu_type Can not be none !'});
-            }
-            var title_ = $('#title_').val();
-            if (!title_) {
-                return message.message({code : 400, message : 'Title Can not be none !'});
-            }
-            var name = $('#name').val();
-            if (!name) {
-                return message.message({code : 400, message : 'Name Can not be none !'});
-            }
+        /*function Save() {
+         var sort_id = $('#sort_id').val();
+         if (!sort_id) {
+         return message.message({code : 400, message : 'Previous Can not be none !'});
+         }
+         var menu_type = $('#menu_type').val();
+         if (!menu_type) {
+         return message.message({code : 400, message : 'Menu_type Can not be none !'});
+         }
+         var title_ = $('#title_').val();
+         if (!title_) {
+         return message.message({code : 400, message : 'Title Can not be none !'});
+         }
+         var name = $('#name').val();
+         if (!name) {
+         return message.message({code : 400, message : 'Name Can not be none !'});
+         }
 
 
-            var url = config.base_url + '/AuthRule/Add';
-            var data = $("form").serialize();
-            $('#add').modal('hide');
-            submit.submit(url, data);
-        }
+         var url = config.base_url + '/AuthRule/Add';
+         var data = $("form").serialize();
+         $('#add').modal('hide');
+         submit.submit(url, data);
+         }*/
     </script>
 </block>
