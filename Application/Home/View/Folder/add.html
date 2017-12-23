@@ -1,0 +1,42 @@
+<div class="modal inmodal" id="add_folder" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content animated bounceInRight">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Add Folder</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="folder_form">
+                    <input type="hidden" name="id" id="folder_id">
+                    <input type="hidden" name="project_id" id="folder_project_id">
+                    <input type="hidden" name="skipping_link" value="{:U('/Project/detail')}">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Module</label>
+                        <div class="col-sm-8">
+                            <select class="form-control m-b" name="module_id" id="folder_module_id">
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Name</label>
+                        <div class="col-sm-8">
+                            <input class="form-control m-b" name="name" id="folder_name"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">List Order</label>
+                        <div class="col-sm-8">
+                            <input class="form-control m-b" name="list_order" id="folder_list_order"/>
+                        </div>
+                    </div>
+                    <input type="reset" id="folder_reset" style="display: none">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="folder_save" onclick="save_folder()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
