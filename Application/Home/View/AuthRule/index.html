@@ -185,16 +185,16 @@
         };
 
         $(function () {
-            var url = config.base_url + '/AuthRule/index';
+            var url = config.base_url + '/AuthRule/getList';
             var menu = '';
             var icon = '';
             $.ajax({
                 url     : url,
                 type    : 'POST',
-                data    : {order : 'list_order desc'},
+                data    : {order : 'list_order asc'},
                 async   : false,
                 success : function (res) {
-                    menu = res.list.rows;
+                    menu = res.list;
                 }
             });
             $.ajax({
@@ -203,7 +203,7 @@
                 async   : false,
                 data    : {fields : 'icon,title', field : 'menu_type', keywords : {0 : 'in', 1 : {0 : 0, 1 : 1, 2 : 2}}},
                 success : function (res) {
-                    icon = res.list.rows;
+                    icon = res.list;
                 }
             });
             var second = [];

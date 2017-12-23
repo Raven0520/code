@@ -92,13 +92,13 @@ var getInfo = {
         }, "JSON")
     },
 
-    getData : function (url) {
+    getList : function (url) {
         $.ajax({
             url     : url,
             type    : 'POST',
             async   : false,
             success : function (res) {
-                temp_data = res.list.rows;
+                temp_data = res.list;
             }
         });
         return temp_data;

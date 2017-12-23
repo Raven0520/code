@@ -29,11 +29,14 @@ class EmptyController extends CommonController
     /**
      * 获取菜单
      * @param $type
+     * @param $show
      */
-    public function getMenu($type = 0)
+    public function getMenu($type = 0, $show = 1)
     {
         //获取菜单
-        $where = ['status' => 1, 'show' => 1];
+        $where = ['status' => 1];
+        $show == 0 && $show = ['neq', 0];
+        $where['show'] = $show;
         if ($type == 1) {
             $group       = M('auth_group')->where(['id' => $this->user['group_id']])->getField('rules');
             $group       = explode(',', $group);
@@ -110,6 +113,28 @@ class EmptyController extends CommonController
     }
 
     /**
+     * 获取数据不分页
+     * @param string $field
+     * @param string $like
+     * @param string $in_
+     * @param bool $fields
+     * @param string $order
+     */
+    public function getList($field = '', $like = '', $in_ = '', $fields = true, $order = '')
+    {
+        if (IS_POST) {
+            if ($field && $like) {
+                $this->where[$field] = ['like', '%' . $like . '%'];
+            }
+            if ($field && $in_) {
+                $this->where[$field] = ['in', $in_];
+            }
+            $this->successResponse(['list' => $this->select(CONTROLLER_NAME, $this->where, $fields, $order)]);
+        }
+    }
+
+
+    /**
      * 编辑操作
      * @param int $id
      */
@@ -128,6 +153,9 @@ class EmptyController extends CommonController
         $action     = ACTION_NAME;
         $controller = CONTROLLER_NAME;
 
+        if ($action == 'getData' || $action == 'getList' || $action == 'getRules') {
+            $action = 'index';
+        }
         $this->auth = $auth->check('/' . $controller . '/' . $action, $this->user['id']);
         'Index' == $controller && $action == 'index' && $this->auth = true;
         $action == 'getMenu' && $this->auth = true;

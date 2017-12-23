@@ -18,4 +18,9 @@ class ControllerModel extends CommonModel
             $result[$k]['module_name'] = $module[$v['module_id']];
         }
     }
+
+    public function _after_insert($data, $options)
+    {
+        M('project')->where(['id' => $data['project_id']])->setInc('controller', 1);
+    }
 }

@@ -1,28 +1,35 @@
 <?php
 return array(
     //'配置项'=>'配置值'
-    'URL_CASE_INSENSITIVE'  => true,  //设置为true的时候表示URL地址不区分大小写
-    'SHOW_PAGE_TRACE'       => true,     //使得页面底部显示跟踪信息
-    'MD5_PRE'               => 'Raven_', //加密前缀
-    'MD5_POS'               => '_code', //加密后缀
+    'URL_CASE_INSENSITIVE' => true,  //设置为true的时候表示URL地址不区分大小写
+    'SHOW_PAGE_TRACE'      => true,     //使得页面底部显示跟踪信息
+    'MD5_PRE'              => 'Raven_', //加密前缀
+    'MD5_POS'              => '_code', //加密后缀
 
     //url访问模式为PathInfo模式
-    'URL_MODEL'             => '1',
+    'URL_MODEL'            => '1',
 
-    'DATA_CACHE_PREFIX' => 'Redis_',//缓存前缀
-    'DATA_CACHE_TYPE'   => 'Redis',//默认动态缓存为Redis
+    'DATA_CACHE_PREFIX'     => 'Redis_',//缓存前缀
+    'DATA_CACHE_TYPE'       => 'Redis',//默认动态缓存为Redis
 //    'REDIS_HOST'        => '120.76.29.107', //redis服务器ip，多台用逗号隔开；读写分离开启时，第一台负责写，其它[随机]负责读；
 //    'REDIS_PORT'        => '7379',//端口号7379
 //    'REDIS_AUTH'        => 'kgjcb7be6c',//AUTH认证密码kgjcb7be6c
-    'REDIS_HOST'        => '127.0.0.1', //redis服务器ip，多台用逗号隔开；读写分离开启时，第一台负责写，其它[随机]负责读；
-    'REDIS_PORT'        => '6379',//端口号7379
-    'REDIS_AUTH'        => '',
-    'REDIS_TIMEOUT'     => '300',//超时时间
-    'REDIS_PERSISTENT'  => false,//是否长连接 false=短连接
+    'REDIS_HOST'            => '127.0.0.1', //redis服务器ip，多台用逗号隔开；读写分离开启时，第一台负责写，其它[随机]负责读；
+    'REDIS_PORT'            => '6379',//端口号7379
+    'REDIS_AUTH'            => '',
+    'REDIS_TIMEOUT'         => '300',//超时时间
+    'REDIS_PERSISTENT'      => false,//是否长连接 false=短连接
 
     //测试时关闭缓存
     'TMPL_CACHE_ON'         => false,//禁止模板编译缓存
     'HTML_CACHE_ON'         => false,//禁止静态缓存
+
+    /** 方法类型 **/
+    'FUNCTION_TYPE'         => [
+        1 => 'Public',
+        2 => 'Protected',
+        3 => 'Private'
+    ],
 
     //域名部署
     'APP_SUB_DOMAIN_DEPLOY' => 1,

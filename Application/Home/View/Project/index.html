@@ -11,11 +11,7 @@
 
 <block name="content">
     <div class="wrapper wrapper-content animated fadeInRight">
-        <div class="row" id="project">
-            <foreach name="data" item="v">
-
-            </foreach>
-        </div>
+        <div class="row" id="project"></div>
     </div>
     <div class="modal inmodal" id="add" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
@@ -70,9 +66,23 @@
                         '<h3><strong>' + v.name + '</strong>' +
                         '<small>&nbsp;&nbsp;' + v.update_time + '</small>' +
                         '</h3>' +
-                        '<p><i class="fa fa-yelp"></i> ' + v.function + '</p>' +
-                        '<p><i class="fa fa-bug"></i> ' + v.bug + '</p>' +
-                        '<p><i class="fa fa-users"></i> ' + v.develop_name + '</p>' +
+                        '<table>' +
+                        '<tbody>' +
+                        '<tr>' +
+                        '<td class="col-sm-6"><span><i class="fa fa-folder">&nbsp;</i>' + v.module + '</span></td>' +
+                        '<td class="col-sm-6"><span><i class="fa fa-yelp">&nbsp;</i>' + v.demand + '</span></td>' +
+                        '</tr>' +
+                        '<tr>' +
+                        '<td class="col-sm-6"><span><i class="fa fa-copyright">&nbsp;</i>' + v.controller + '</span></td>' +
+                        '<td class="col-sm-6"><span><i class="fa fa-bug">&nbsp;</i>' + v.bug + '</span></td>' +
+                        '</tr>' +
+                        '<tr>' +
+                        '<td class="col-sm-6"><span><i class="fa fa-yelp">&nbsp;</i>' + v.function + '</span></td>' +
+                        '<td class="col-sm-6"></td>' +
+                        '</tr>' +
+                        '<td rowspan="2" class="col-sm-6"><span><i class="fa fa-users">&nbsp;</i>' + v.develop_name + '</span></td>' +
+                        '</tbody>' +
+                        '</table>' +
                         '</div>' +
                         '<div class="clearfix"></div>' +
                         '</a>' +
@@ -88,7 +98,7 @@
             $.post(url, {id : id}, function (res) {
                 if (res.code == 200) {
                     window.location.href = config.html_url + '/Project/detail';
-                }else {
+                } else {
                     message.message(res);
                 }
             }, "JSON")

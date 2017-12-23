@@ -120,7 +120,7 @@
             var url = config.base_url + '/AuthRule/getMenu';
             var html = '';
             var rule = '';
-            $.post(url, {}, function (res) {
+            $.post(url, {show : 0}, function (res) {
                 rule = res.menu;
                 $.each(rule, function (i, v) {
                     html += '<button onclick="choose(' + v.id + ',1)" id="' + v.id + '" type="button" class="btn btn-default m-r" style="width: 160px"><i class="' + v.icon + ' m-r-sm"></i>' + v.title + '</button>';

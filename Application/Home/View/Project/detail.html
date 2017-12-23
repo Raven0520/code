@@ -26,6 +26,9 @@
                             <a class="add-link" data-toggle="modal" data-target="#add_controller" onclick="clean.reset_form('#controller_reset','controller_save')">
                                 <i class="fa fa-copyright"></i>
                             </a>
+                            <a class="add-link" title="添加 function" data-toggle="modal" data-target="#add_function" onclick="clean.reset_form('#function_reset','function_save')">
+                                <i class="fa fa-terminal"></i>
+                            </a>
                             <a class="collapse-link">
                                 <i class="fa fa-chevron-up"></i>
                             </a>
@@ -101,6 +104,7 @@
 
     <include file="Module/add"/>
     <include file="Controller/add"/>
+    <include file="Function/add"/>
 
     <div class="modal inmodal" id="add" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
@@ -211,6 +215,7 @@
             var project = '';
             var module = '';
             var controller = '';
+            var function_ = '';
             var html = '';
             var type = '';
             var option = '';
@@ -222,12 +227,13 @@
                 success : function (res) {
                     project = res.info;
                     fill.fill_by_id({project_name : 'name'}, project, 2);
-                    fill.fill_by_id({module_project_id : 'id', controller_project_id : 'id'}, project, 1);
+                    fill.fill_by_id({module_project_id : 'id', controller_project_id : 'id', function_project_id : 'id'}, project, 1);
                 }
             });
 
-            module = getInfo.getData(config.base_url + '/Module/index');
-            controller = getInfo.getData(config.base_url + '/Controller/index');
+            module = getInfo.getList(config.base_url + '/Module/getList');
+            controller = getInfo.getList(config.base_url + '/Controller/getList');
+            function_ = getInfo.getList(config.base_url + '/Function/getList');
 
             var types = {
                 'default'         : {'icon' : 'fa fa-list'},
@@ -239,7 +245,8 @@
                 'Change_Head_img' : {'icon' : 'fa fa-recycle'},
                 'module'          : {'icon' : 'fa fa-folder'},
                 'module_'         : {'icon' : 'fa fa-folder-o'},
-                'controller'      : {'icon' : 'fa fa-copyright'}
+                'controller'      : {'icon' : 'fa fa-copyright'},
+                'function_'       : {'icon' : 'fa fa-terminal'}
             };
             option = '';
             //加载模块
@@ -249,7 +256,7 @@
                 option += '<option value="' + v.id + '">' + v.name + '</option>';
                 $("#app").append(html);
             });
-            $('#controller_module_id').append(option);
+            $('#controller_module_id,#function_module_id').append(option);
 
             var module_ = {
                 0  : {name : 'Common', id : 'Api'},
@@ -276,11 +283,24 @@
             });
 
             //加载控制器
+            option = '';
             $.each(controller, function (i, v) {
                 type = '{"type":"controller"}';
                 html = "<li data-jstree='" + type + "'><button style='border: none;padding: 0' class='btn-link'>" + v.name + "</button><ul id='controller_" + v.id + "'></ul></li>";
+                option += '<option value="' + v.id + '">' + v.name + '</option>';
                 $('#' + v.module_name + '_Controller').append(html);
             });
+            $('#function_controller_id').append(option);
+
+            //加载方法
+//            option = '';
+            $.each(function_, function (i, v) {
+                type = '{"type":"function_"}';
+                html = "<li data-jstree='" + type + "'><button style='border: none;padding: 0' class='btn-link'>" + v.type_name + " function <span style='color:#1ab394'>" + v.name + "</span></button><ul id='controller_" + v.id + "'></ul></li>";
+//                option += '<option value="' + v.id + '">' + v.name + '</option>';
+                $('#controller_' + v.controller_id).append(html);
+            });
+//            $('#function_controller_id').append(option);
 
             $('#tree').jstree({
                 'core'    : {
@@ -384,6 +404,46 @@
             var data = $("#controller_form").serialize();
             var url = config.base_url + '/Controller/Add';
             $('#add_controller').modal('toggle');
+            submit.submit(url, data);
+        }
+
+        function chooseFunctionType(type, id) {
+            $('#function_type').val(type);
+            var ids = {
+                0 : 'function_type_public',
+                1 : 'function_type_protected',
+                2 : 'function_type_private'
+            };
+            $.each(ids, function (i, v) {
+                $('#' + v).removeClass().addClass('btn btn-default');
+            });
+            changeClass(id, 'btn-info', 'btn-default');
+        }
+
+        /**
+         * 更改样式的方法
+         */
+        function changeClass(id, origin, replace) {
+            var bool;
+            var target = $('#' + id);
+            var cls = target.attr('class');
+            bool = cls.indexOf(origin) + 1;
+
+            0 != bool && target.removeClass(origin).addClass(replace);
+            0 == bool && target.removeClass(replace).addClass(origin);
+        }
+
+        function save_function() {
+            var name = $('#function_name').val();
+            if (!name) return message.message({code : 400, message : 'Function Name Can not be none !'});
+            var module_id = $('#function_module_id').val();
+            if (!module_id) return message.message({code : 400, message : 'Please choose module !'});
+            var controller_id = $('#function_controller_id').val();
+            if (!controller_id) return message.message({code : 400, message : 'Please choose controller !'});
+
+            var data = $("#function_form").serialize();
+            var url = config.base_url + '/Function/Add';
+            $('#add_function').modal('toggle');
             submit.submit(url, data);
         }
         /**
