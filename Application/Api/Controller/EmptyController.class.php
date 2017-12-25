@@ -153,7 +153,7 @@ class EmptyController extends CommonController
         $action     = ACTION_NAME;
         $controller = CONTROLLER_NAME;
 
-        if ($action == 'getData' || $action == 'getList' || $action == 'getRules') {
+        if ($action == 'getData' || $action == 'getList' || $action == 'getRules' || $action == 'getFunctions') {
             $action = 'index';
         }
         $this->auth = $auth->check('/' . $controller . '/' . $action, $this->user['id']);

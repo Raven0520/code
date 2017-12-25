@@ -14,8 +14,10 @@ class ControllerModel extends CommonModel
     public function _after_select(&$result, $options)
     {
         $module = M('module')->getField('id,name');
+        $folder = M('folder')->getField('id,name');
         foreach ($result as $k => $v) {
             $result[$k]['module_name'] = $module[$v['module_id']];
+            $result[$k]['folder_name'] = $folder[$v['folder_id']];
         }
     }
 
