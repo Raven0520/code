@@ -112,7 +112,7 @@ function link_function_init() {
             if (v.functions) {
                 html += '<p>';
                 $.each(v.functions, function (k, vo) {
-                    html += '<button type="button" class="btn btn-xs btn-default">' + vo.type_name + ' function <span style="color:#1ab394">' + vo.name + '</span></button>';
+                    html += '<button type="button" class="btn btn-xs btn-default used-function-btn" style="margin-right: 5px" onclick="choose_link(' + vo.id + ')" id="used_function_' + vo.id + '">' + vo.type_name + ' function <span style="color:#f8ac59">' + vo.name + '</span></button>';
                 });
                 html += '</p>';
             }
@@ -147,6 +147,7 @@ function show_edit(id, type) {
     $('#edit_id').val(id);
     $('#edit_modal').val(area);
     $('#edit_area').html(html);
+    $('#used_function_name').html(html);
 }
 
 //编辑路由
@@ -200,7 +201,7 @@ function edit() {
             function_description   : 'description',
             function_list_order    : 'list_order'
         };
-        save_btn.val('controller_save');
+        save_btn.val('function_save');
     }
     $.post(url, {id : id}, function (res) {
         data = res.info;
@@ -220,7 +221,63 @@ function fill_function_detail(id) {
         var tag = {path : 'path', description : 'description', used_path : 'used_path', function_path : 'function_path', javascript_path : 'javascript_path'};
         fill.fill_by_id(tag, res.info, 2);
         //关系表填充
+        tag = {function_used : 'used', function_used_old : 'used'};
+        fill.fill_by_id(tag, res.info, 1);
     }, "JSON");
+}
+
+function choose_link(id) {
+    update_used(id);
+    id = 'used_function_' + id;
+    changeClass(id, 'btn-default', 'btn-info');
+}
+
+/**
+ * 去除元素的方法
+ */
+function remove_used(arr, val) {
+    for (var i = 0; i < arr.length; i++) {
+        arr[i] == val && arr.splice(i, 1);
+    }
+}
+
+function update_used(id) {
+    var used = $('#function_used');
+    var used_list = used.val();
+    if (used_list) {
+        used_list = used_list.split(',');
+        var is_new = true;
+        $.each(used_list, function (i, v) {
+            if (id == v) {
+                is_new = false;
+            }
+        });
+        if (is_new) {
+            used_list.push(id);
+        } else {
+            remove_used(used_list, id);
+        }
+        used_list = used_list.join(',');
+    } else {
+        used_list = id;
+    }
+    used.val(used_list);
+
+}
+
+function show_link() {
+    var modal = $('#edit_modal').val();
+    if (modal != 'Function') return message.message({code : 400, message : 'Please choose function !'});
+    $('.used-function-btn').removeClass().addClass('btn btn-xs btn-default');
+    var used = $('#function_used').val();
+    var used_list = used.split(',');
+    if (used) {
+        $.each(used_list, function (i, v) {
+            changeClass('used_function_' + v, 'btn-info', 'btn-default');
+        });
+    }
+    $('#save_btn').val('used_save');
+    $('#add_link').modal('toggle');
 }
 
 function save() {
@@ -299,5 +356,17 @@ function save_function() {
     var data = $("#function_form").serialize();
     var url = config.base_url + '/Function/Add';
     $('#add_function').modal('toggle');
+    submit.submit(url, data);
+}
+
+function save_used() {
+    var id = $('#edit_id').val();
+    var modal = $('#edit_modal').val();
+    if (modal != 'Function') return message.message({code : 400, message : 'Something Wrong ! Refresh The Page And Retry !'});
+    var url = config.base_url + '/Function/add';
+    var used = $('#function_used').val();
+    var used_old = $('#function_used_old').val();
+    var skipping_link = $('#skipping_link').val();
+    var data = {id : id, used : used, used_old : used_old, skipping_link : skipping_link};
     submit.submit(url, data);
 }

@@ -5,14 +5,17 @@
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                 <h4 class="modal-title">Choose Used Function</h4>
                 <small class="font-bold">Choose Functions needed in this function.</small>
+                <button type="button" class="btn btn-default" id="used_function_name"></button>
             </div>
             <div class="modal-body" id="functions_area">
-
+                <input type="hidden" id="skipping_link" value="{:U('/Project/detail')}">
+                <input type="hidden" id="function_used">
+                <input type="hidden" id="function_used_old">
             </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-primary" id="used_save" onclick="save_used()">Save</button>
             </div>
         </div>
     </div>
