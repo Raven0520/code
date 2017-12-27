@@ -80,7 +80,7 @@ function init() {
     option = '';
     $.each(controller, function (i, v) {
         type = '{"type":"controller"}';
-        html = "<li data-jstree='" + type + "'><button type='button' style='border: none;padding: 0' class='btn-link' onclick='show_edit(" + v.id + ",3)'><span id='Controller_name_" + v.id + "'>" + v.name + "</span></button><ul id='controller_" + v.id + "'></ul></li>";
+        html = "<li data-jstree='" + type + "'><button type='button' style='border: none;padding: 0' class='btn-link' onclick='show_edit(" + v.id + ",3)'><span id='Controller_name_" + v.id + "'>" + v.name + ' ' +v.description +"</span></button><ul id='controller_" + v.id + "'></ul></li>";
         option += '<option value="' + v.id + '">' + v.name + '</option>';
         $('#folder_' + v.folder_id).append(html);
     });
@@ -90,7 +90,7 @@ function init() {
 //            option = '';
     $.each(function_, function (i, v) {
         type = '{"type":"function_"}';
-        html = "<li data-jstree='" + type + "'><button style='border: none;padding: 0' class='btn-link' onclick='show_edit(" + v.id + ",4)'><span id='Function_name_" + v.id + "'>" + v.type_name + " function <span style='color:#1ab394'>" + v.name + "</span></span></button><ul id='controller_" + v.id + "'></ul></li>";
+        html = "<li data-jstree='" + type + "'><button style='border: none;padding: 0' class='btn-link' onclick='show_edit(" + v.id + ",4)'><span id='Function_name_" + v.id + "'>" + v.type_name + " function <span style='color:#1ab394'>" + v.name + "</span>&nbsp;&nbsp;"+ v.description +"</span></button><ul id='controller_" + v.id + "'></ul></li>";
 //                option += '<option value="' + v.id + '">' + v.name + '</option>';
         $('#controller_' + v.controller_id).append(html);
     });
