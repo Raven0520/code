@@ -17,6 +17,9 @@ var clean = {
 
     reset_form : function (dom, btn) {
         $(dom).click();
+        $('#folder_module_id,#controller_module_id,#function_module_id').val($('#module_id').val());
+        $('#controller_folder_id').val($('#folder_id').val());
+        $('#function_controller_id').val($('#controller_id').val());
         $('#save_btn').val(btn);
     }
 };

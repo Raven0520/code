@@ -135,14 +135,17 @@ function show_edit(id, type) {
         icon = 'fa fa-folder';
         area = 'Module';
         name = $('#' + area + '_name_' + id).html();
+        $('#module_id').val(id);
     } else if (type == 2) {
         icon = 'fa fa-folder-o';
         area = 'Folder';
         name = $('#' + area + '_name_' + id).html();
+        $('#folder_id').val(id);
     } else if (type == 3) {
         icon = 'fa fa-copyright';
         area = 'Controller';
         name = $('#' + area + '_name_' + id).html();
+        $('#controller_id').val(id);
     } else if (type == 4) {
         icon = 'fa fa-terminal';
         area = 'Function';
