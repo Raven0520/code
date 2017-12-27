@@ -105,7 +105,7 @@ class EmptyController extends CommonController
             $this->startTrans();
             $id = $model->update();
             if (false != $id) {
-                $this->successResponse(['id' => $id, 'url' => $url], 'Success');
+                $this->successResponse(['id' => $id], 'Success');
             } else {
                 $this->errorResponse($model->getError());
             }

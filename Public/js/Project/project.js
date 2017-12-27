@@ -41,7 +41,6 @@ function init() {
     var folder = getInfo.getList(config.base_url + '/Folder/getList');
     var controller = getInfo.getList(config.base_url + '/Controller/getList');
     var function_ = getInfo.getList(config.base_url + '/Function/getList');
-
     var types = {
         'default'         : {'icon' : 'fa fa-list'},
         'Add'             : {'icon' : 'fa fa-plus'},
@@ -291,7 +290,7 @@ function update_used(id) {
 function show_link() {
     var modal = $('#edit_modal').val();
     if (modal != 'Function') return message.message({code : 400, message : 'Please choose function !'});
-    $('.used-function-btn').removeClass().addClass('btn btn-xs btn-default');
+    $('.used-function-btn').removeClass().addClass('btn btn-xs btn-default used-function-btn');
     var used = $('#function_used').val();
     var used_list = used.split(',');
     if (used) {
@@ -391,6 +390,7 @@ function save_used() {
     var used_old = $('#function_used_old').val();
     var skipping_link = $('#skipping_link').val();
     var data = {id : id, used : used, used_old : used_old, skipping_link : skipping_link};
+    $('#add_link').modal('toggle');
     submit.submit(url, data);
 }
 
