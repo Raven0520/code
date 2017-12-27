@@ -62,9 +62,6 @@
                     <div class="ibox-title">
                         <h5>Function Detail</h5>
                         <div class="ibox-tools">
-                            <a class="add-link" onclick="show_code()">
-                                <i class="fa fa-search" style="color: #1ab394"></i>
-                            </a>
                             <a class="add-link" onclick="show_link()">
                                 <i class="fa fa-link" style="color: #1ab394"></i>
                             </a>
@@ -106,6 +103,11 @@
                             <span id="javascript_path"></span>
                         </div>
                     </div>
+
+                    <div class="ibox-content">
+                        <textarea name="" id="function_code"></textarea>
+                        <button type="button" class="btn btn-info" onclick="save_code()">Save Code</button>
+                    </div>
                     <!--菜单id-->
                 </div>
             </div>
@@ -117,13 +119,19 @@
     <include file="Controller/add"/>
     <include file="Function/add"/>
     <include file="Function/link"/>
+    <include file="Function/code"/>
     <!--隐藏域-->
     <input type="hidden" id="save_btn" value="module_save">
+    <input type="hidden" id="skipping_link" value="{:U('/Project/detail')}">
 </block>
 
 
 <block name="footer-end">
     <script src="/Public/js/plugins/jsTree/jstree.min.js"></script>
+    <!-- CodeMirror -->
+    <script src="/Public/js/plugins/codemirror/codemirror.js"></script>
+    <script src="/Public/js/plugins/codemirror/mode/javascript/javascript.js"></script>
+
     <script src="/Public/js/Project/project.js"></script>
 </block>
 

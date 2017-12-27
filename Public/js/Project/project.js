@@ -19,6 +19,12 @@ function init() {
     var html = '';
     var type = '';
     var option = '';
+    var code_editor = CodeMirror.fromTextArea(document.getElementById("function_code"), {
+        lineNumbers     : true,
+        matchBrackets   : true,
+        styleActiveLine : true,
+        theme           : "ambiance"
+    });
     $.ajax({
         url     : config.base_url + '/Project/edit',
         type    : 'POST',
@@ -147,7 +153,15 @@ function show_edit(id, type) {
     $('#edit_id').val(id);
     $('#edit_modal').val(area);
     $('#edit_area').html(html);
-    $('#used_function_name').html(html);
+    $('#used_function_name,#code_function_name').html(html);
+    $('.CodeMirror').remove();
+    code_editor = CodeMirror.fromTextArea(document.getElementById("function_code"), {
+        lineNumbers     : true,
+        matchBrackets   : true,
+        styleActiveLine : true,
+        autofocus       : true,
+        theme           : "ambiance"
+    });
 }
 
 //编辑路由
@@ -215,15 +229,21 @@ function edit() {
 
 function fill_function_detail(id) {
     var url = config.base_url + '/Function/edit';
-    $.post(url, {id : id}, function (res) {
-        //右侧Detail内容填充
-        $(".rule-box").removeClass('form-group');
-        var tag = {path : 'path', description : 'description', used_path : 'used_path', function_path : 'function_path', javascript_path : 'javascript_path'};
-        fill.fill_by_id(tag, res.info, 2);
-        //关系表填充
-        tag = {function_used : 'used', function_used_old : 'used'};
-        fill.fill_by_id(tag, res.info, 1);
-    }, "JSON");
+    $.ajax({
+        url     : url,
+        type    : 'POST',
+        data    : {id : id},
+        async   : false,
+        success : function (res) {
+            //右侧Detail内容填充
+            $(".rule-box").removeClass('form-group');
+            var tag = {path : 'path', description : 'description', used_path : 'used_path', function_path : 'function_path', javascript_path : 'javascript_path', function_code : 'content'};
+            fill.fill_by_id(tag, res.info, 2);
+            //关系表填充
+            tag = {function_used : 'used', function_used_old : 'used'};
+            fill.fill_by_id(tag, res.info, 1);
+        }
+    });
 }
 
 function choose_link(id) {
@@ -368,5 +388,16 @@ function save_used() {
     var used_old = $('#function_used_old').val();
     var skipping_link = $('#skipping_link').val();
     var data = {id : id, used : used, used_old : used_old, skipping_link : skipping_link};
+    submit.submit(url, data);
+}
+
+function save_code() {
+    var id = $('#edit_id').val();
+    var modal = $('#edit_modal').val();
+    if (modal != 'Function') return message.message({code : 400, message : 'Something Wrong ! Refresh The Page And Retry !'});
+    var url = config.base_url + '/Function/add';
+    var content = code_editor.getValue();
+    var skipping_link = $('#skipping_link').val();
+    var data = {id : id, content : content, skipping_link : skipping_link};
     submit.submit(url, data);
 }
