@@ -11,8 +11,10 @@ namespace Api\Controller;
 
 class FunctionController extends EmptyController
 {
-    public function getFunctions()
+    public function getFunctions($module_id)
     {
+        $this->where['module_id'] = $module_id;
+
         $controller = $this->select('Controller', $this->where, 'id,name,module_id,folder_id');
         $function   = $this->select('Function', $this->where, 'id,name,controller_id,type');
 

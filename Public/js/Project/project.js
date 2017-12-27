@@ -10,7 +10,6 @@ document.onkeydown = function (e) {
 
 $(function () {
     init();
-    link_function_init();
 });
 
 function init() {
@@ -79,7 +78,7 @@ function init() {
     option = '';
     $.each(controller, function (i, v) {
         type = '{"type":"controller"}';
-        html = "<li data-jstree='" + type + "'><button type='button' style='border: none;padding: 0' class='btn-link' onclick='show_edit(" + v.id + ",3)'><span id='Controller_name_" + v.id + "'>" + v.name + ' ' +v.description +"</span></button><ul id='controller_" + v.id + "'></ul></li>";
+        html = "<li data-jstree='" + type + "'><button type='button' style='border: none;padding: 0' class='btn-link' onclick='show_edit(" + v.id + ",3)'><span id='Controller_name_" + v.id + "'>" + v.name + ' ' + v.description + "</span></button><ul id='controller_" + v.id + "'></ul></li>";
         option += '<option value="' + v.id + '">' + v.name + '</option>';
         $('#folder_' + v.folder_id).append(html);
     });
@@ -89,7 +88,7 @@ function init() {
 //            option = '';
     $.each(function_, function (i, v) {
         type = '{"type":"function_"}';
-        html = "<li data-jstree='" + type + "'><button style='border: none;padding: 0' class='btn-link' onclick='show_edit(" + v.id + ",4)'><span id='Function_name_" + v.id + "'>" + v.type_name + " function <span style='color:#1ab394'>" + v.name + "</span>&nbsp;&nbsp;"+ v.description +"</span></button><ul id='controller_" + v.id + "'></ul></li>";
+        html = "<li data-jstree='" + type + "'><button style='border: none;padding: 0' class='btn-link' onclick='show_edit(" + v.id + ",4)'><span id='Function_name_" + v.id + "'>" + v.type_name + " function <span style='color:#1ab394'>" + v.name + "</span>&nbsp;&nbsp;" + v.description + "</span></button><ul id='function_" + v.id + "'></ul></li>";
 //                option += '<option value="' + v.id + '">' + v.name + '</option>';
         $('#controller_' + v.controller_id).append(html);
     });
@@ -109,21 +108,30 @@ function init() {
 function link_function_init() {
     var url = config.base_url + '/Function/getFunctions';
     var html = '';
-    $.post(url, {}, function (res) {
-        var controller = res.list;
-        $.each(controller, function (i, v) {
-            html += '<p>' + v.name + '</p>' +
-                '<p style="border-bottom: 1px solid #ccc"></p>';
-            if (v.functions) {
-                html += '<p>';
-                $.each(v.functions, function (k, vo) {
-                    html += '<button type="button" class="btn btn-xs btn-default used-function-btn" style="margin-right: 5px" onclick="choose_link(' + vo.id + ')" id="used_function_' + vo.id + '">' + vo.type_name + ' function <span style="color:#f8ac59">' + vo.name + '</span></button>';
-                });
-                html += '</p>';
-            }
-        });
-        $('#functions_area').append(html);
-    }, "JSON");
+    var function_area = $('#functions_area');
+    var module_id = $('#module_id').val();
+    $.ajax({
+        url     : url,
+        type    : 'POST',
+        async   : false,
+        data    : {module_id : module_id},
+        success : function (res) {
+            var controller = res.list;
+            function_area.empty();
+            $.each(controller, function (i, v) {
+                html += '<p>' + v.name + '</p>' +
+                    '<p style="border-bottom: 1px solid #ccc"></p>';
+                if (v.functions) {
+                    html += '<p>';
+                    $.each(v.functions, function (k, vo) {
+                        html += '<button type="button" class="btn btn-xs btn-default used-function-btn" style="margin-right: 5px;margin-bottom: 5px" onclick="choose_link(' + vo.id + ')" id="used_function_' + vo.id + '">' + vo.type_name + ' function <span style="color:#f8ac59">' + vo.name + '</span></button>';
+                    });
+                    html += '</p>';
+                }
+            });
+            function_area.append(html);
+        }
+    });
 }
 
 function show_edit(id, type) {
@@ -290,6 +298,7 @@ function update_used(id) {
 function show_link() {
     var modal = $('#edit_modal').val();
     if (modal != 'Function') return message.message({code : 400, message : 'Please choose function !'});
+    link_function_init();
     $('.used-function-btn').removeClass().addClass('btn btn-xs btn-default used-function-btn');
     var used = $('#function_used').val();
     var used_list = used.split(',');

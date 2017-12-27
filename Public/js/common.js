@@ -100,6 +100,7 @@ var getInfo = {
             url     : url,
             type    : 'POST',
             async   : false,
+            data    : {order : 'list_order asc'},
             success : function (res) {
                 temp_data = res.list;
             }
