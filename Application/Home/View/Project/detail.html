@@ -106,7 +106,7 @@
 
                     <div class="ibox-content">
                         <textarea name="" id="function_code"></textarea>
-                        <button type="button" class="btn btn-info" onclick="save_code()">Save Code</button>
+                        <button type="button" class="btn btn-info" id="code_save" onclick="save_code()">Save Code</button>
                     </div>
                     <!--菜单id-->
                 </div>
@@ -121,7 +121,7 @@
     <include file="Function/link"/>
     <include file="Function/code"/>
     <!--隐藏域-->
-    <input type="hidden" id="save_btn" value="module_save">
+    <input type="hidden" id="save_btn" value="code_save">
     <input type="hidden" id="module_id">
     <input type="hidden" id="folder_id">
     <input type="hidden" id="controller_id">
