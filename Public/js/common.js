@@ -15,12 +15,16 @@ var clean = {
         })
     },
 
-    reset_form : function (dom, btn) {
-        $(dom).click();
-        $('#folder_module_id,#controller_module_id,#function_module_id').val($('#module_id').val());
-        $('#controller_folder_id').val($('#folder_id').val());
-        $('#function_controller_id').val($('#controller_id').val());
-        $('#save_btn').val(btn);
+    reset_form : function (dom) {
+        var module = $('#module_id');
+        var folder = $('#folder_id');
+        var controller = $('#controller_id');
+        $('#' + dom + '_reset').click();
+        $('#folder_module_id,#controller_module_id,#function_module_id').val(module.val());
+        $('#controller_folder_id').val(folder.val());
+        $('#function_controller_id').val(controller.val());
+        $('#' + dom + '_id').val('');
+        $('#save_btn').val(dom + '_save');
     }
 };
 

@@ -15,8 +15,8 @@ class FunctionController extends EmptyController
     {
         $this->where['module_id'] = $module_id;
 
-        $controller = $this->select('Controller', $this->where, 'id,name,module_id,folder_id');
-        $function   = $this->select('Function', $this->where, 'id,name,controller_id,type');
+        $controller = $this->select('Controller', $this->where, 'id,name,module_id,folder_id', 'list_order asc');
+        $function   = $this->select('Function', $this->where, 'id,name,controller_id,type', 'list_order asc');
 
         foreach ($controller as $k => $v) {
             foreach ($function as $key => $val) {
